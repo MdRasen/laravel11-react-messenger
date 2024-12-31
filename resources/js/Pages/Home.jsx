@@ -5,6 +5,7 @@ import { Head } from "@inertiajs/react";
 import { useEffect, useState, useRef } from "react";
 import ConversationHeader from "@/Components/App/ConversationHeader";
 import MessageItem from "@/Components/App/MessageItem";
+import MessageInput from "@/Components/App/MessageInput";
 
 function Home({ selectedConversation, messages, user }) {
     const [localMessages, setLocalMessages] = useState([]);
@@ -61,7 +62,7 @@ function Home({ selectedConversation, messages, user }) {
                             </div>
                         )}
                     </div>
-                    {/* <MessageInput conversation={selectedConversation} /> */}
+                    <MessageInput conversation={selectedConversation} />
                 </>
             )}
         </>
