@@ -26,13 +26,12 @@ export default function AuthenticatedLayout({ header, children }) {
                     .sort((a, b) => a - b)
                     .join("-")}`;
             }
-            // console.log(channel);
             Echo.private(channel)
                 .error((error) => {
                     console.log(error);
                 })
                 .listen("SocketMessage", (e) => {
-                    console.log("SocketMessage:", e);
+                    // console.log("SocketMessage:", e);
                     const message = e.message;
                     // if the conversation with the send is not selected
                     // then show notification
@@ -48,7 +47,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             message.message ||
                             `shared ${
                                 message.attachments.length === 1
-                                    ? "a attachment"
+                                    ? "an attachment"
                                     : message.attachments.length +
                                       " attachments"
                             }`,

@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Group;
 use App\Models\Message;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Models\MessageAttachment;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\MessageResource;
@@ -15,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Conversation;
+use Log;
 
 class MessageController extends Controller
 {
@@ -94,8 +94,10 @@ class MessageController extends Controller
                     'size' => $file->getSize(),
                     'path' => $file->store($directory, 'public'),
                 ];
-                $attachments = MessageAttachment::create($model);
+                $attachment = MessageAttachment::create($model);
+                $attachments[] = $attachment;
             }
+
             $message->attachments = $attachments;
         }
 
