@@ -10,12 +10,7 @@ import {
 import NewMessageInput from "./NewMessageInput";
 import axios from "axios";
 import EmojiPicker from "emoji-picker-react";
-import {
-    Popover,
-    PopoverButton,
-    PopoverPanel,
-    Transition,
-} from "@headlessui/react";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { isImage, isAudio } from "@/helpers";
 import AttachmentPreview from "./AttachmentPreview";
 import CustomAudioPlayer from "./CustomAudioPlayer";
