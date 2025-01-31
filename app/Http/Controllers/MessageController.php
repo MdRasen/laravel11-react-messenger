@@ -16,6 +16,8 @@ use App\Http\Resources\UserResource;
 use App\Models\Conversation;
 use Log;
 
+use function Psy\debug;
+
 class MessageController extends Controller
 {
     public function byUser(User $user)
@@ -117,12 +119,33 @@ class MessageController extends Controller
     {
         // check if the user is the owner of the message
         if($message->sender_id !== Auth::id()) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        $group = null;
+        $conversation = null;
+        $lastMessage = null; // Initialize the variable to avoid undefined error
+
+        // check if the message is the group message
+        if($message->group_id) {
+            $group = Group::where('last_message_id', $message->id)->first();
+        } else {
+            $conversation = Conversation::where('last_message_id', $message->id)->first();
         }
 
         // delete the message
         $message->delete();
 
-        return response('', 204);
+        if($group) {
+            // repopulate the group's last message
+            $group = Group::find($group->id);
+            $lastMessage = $group->lastMessage;
+        } elseif($conversation) {
+            // repopulate the conversation's last message
+            $conversation = Conversation::find($conversation->id);
+            $lastMessage = $conversation->lastMessage;
+        }
+
+        return response()->json(['message' => $lastMessage ? new MessageResource($lastMessage) : null], 200);
     }
 }

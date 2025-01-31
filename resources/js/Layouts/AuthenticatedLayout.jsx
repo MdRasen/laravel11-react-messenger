@@ -30,7 +30,7 @@ export default function AuthenticatedLayout({ header, children }) {
             }
             Echo.private(channel)
                 .error((error) => {
-                    console.log(error);
+                    // console.log(error);
                 })
                 .listen("SocketMessage", (e) => {
                     // console.log("SocketMessage:", e);
