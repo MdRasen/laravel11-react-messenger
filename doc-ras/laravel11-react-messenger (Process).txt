@@ -1,0 +1,49 @@
+==RUN PROJECT==
+--> php artisan serve
+--> npm run dev
+--> php artisan reverb:start --debug
+
+=====
+
+
+
+
+1) Install Laravel Project, Setup database connection
+2) Setup breeze --> React --> Dark --> 0
+
+3) Install require packages like Headless UI, Hero Icons, Daisy UI, Emoji Picker React, React markdown, and UUID
+Run the command "npm install @headlessui/react @heroicons/react daisyui emoji-picker-react react-markdown uuid"
+4) Install broadcast
+Run the command "php artisan install:broadcasting" --> Yes --> Yes
+
+5) Generate Model & Migration
+Run commands:
+"php artisan make:model Group -M"
+"php artisan make:model Conversation -M"
+"php artisan make:model Message -M"
+"php artisan make:model MessageAttachment -M"
+[-M Creates the migration (db) file as well]
+
+After that, setup the migration tables and others!
+
+6) Now, setup the factories for data seeding
+Run commands:
+"php artisan make:factory GroupFactory"
+"php artisan make:factory MessageFactory"
+
+After setup:
+Run "php artisan migrate:fresh --seed"
+
+
+
+... ...
+... ...
+
+
+7) Run reverb:
+"php artisan reverb:start --debug"
+
+
+
+
+
