@@ -32,21 +32,21 @@ class UserController extends Controller
 
         $message = "User role changed to " . ($user->is_admin ? 'admin' : 'user');
 
-        return redirect()->json(['message' => $message]);
+        return response()->json(['message' => $message]);
     }
 
     public function blockUnblock(User $user)
     {
-        if ($user->is_blocked) {
+        if ($user->blocked_at) {
             $user->blocked_at = null;
-            $message = "User unblocked";
+            $message = "User '$user->name' has been unblocked";
         } else {
             $user->blocked_at = now();
-            $message = "User blocked";
+            $message = "User '$user->name' has been blocked";
         }
 
         $user->save();
 
-        return redirect()->json(['message' => $message]);
+        return response()->json(['message' => $message]);
     }
 }

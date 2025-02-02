@@ -13,30 +13,39 @@ import {
     UserIcon,
 } from "@heroicons/react/24/solid";
 import React, { Fragment } from "react";
-
 import axios from "axios";
+import { useEventBus } from "@/EventBus";
 
 export default function UserOptionsDropdown({ conversation }) {
+    const { emit } = useEventBus();
+
     const changeUserRole = () => {
         console.log("change user role");
-        if (conversation.is_user) {
+        if (!conversation.is_user) {
             return;
         }
         // send axios request to change user role and show success message
-        axios.post(route("user.changeRole", conversation.id)).then((res) => {
-            console.log(res.data);
-        });
+        axios
+            .post(route("user.changeRole", conversation.id))
+            .then((res) => {
+                console.log(res.data);
+                emit("toast.show", res.data.message);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     };
 
     const onBlockUser = () => {
         console.log("block user");
-        if (conversation.is_user) {
+        if (!conversation.is_user) {
             return;
         }
         // send axios request to block user and show success message
         axios
             .post(route("user.blockUnblock", conversation.id))
             .then((res) => {
+                emit("toast.show", res.data.message);
                 console.log(res.data);
             })
             .catch((err) => {
@@ -70,7 +79,7 @@ export default function UserOptionsDropdown({ conversation }) {
                                             active
                                                 ? "bg-black/30 text-white"
                                                 : "bg-gray-100"
-                                        } group flex w-full item rounded-md px-2 py-2 text-sm`}
+                                        } text-black group flex w-full item rounded-md px-2 py-2 text-sm`}
                                     >
                                         {conversation.blocked_at && (
                                             <>
@@ -97,7 +106,7 @@ export default function UserOptionsDropdown({ conversation }) {
                                             active
                                                 ? "bg-black/30 text-white"
                                                 : "bg-gray-100"
-                                        } group flex w-full item rounded-md px-2 py-2 text-sm`}
+                                        } text-black group flex w-full item rounded-md px-2 py-2 text-sm`}
                                     >
                                         {conversation.is_admin && (
                                             <>
