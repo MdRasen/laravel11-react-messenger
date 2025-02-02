@@ -6,7 +6,7 @@ import {
     Transition,
 } from "@headlessui/react";
 import { EllipsisVerticalIcon, TrashIcon } from "@heroicons/react/24/solid";
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment } from "react";
 import axios from "axios";
 import { useEventBus } from "@/EventBus";
 

@@ -51,14 +51,14 @@ class MessageController extends Controller
     public function loadOlder(Message $message)
     {
         // Load older messages that are older than the given message, sort them by the latest
-        if($message->group_id) {
+        if ($message->group_id) {
             $messages = Message::where('created_at', '<', $message->created_at)
                 ->where('group_id', $message->group_id)
                 ->latest()
                 ->paginate(10);
         } else {
             $messages = Message::where('created_at', '<', $message->created_at)
-                ->where(function($query) use ($message) {
+                ->where(function ($query) use ($message) {
                     $query->where('sender_id', $message->sender_id)
                         ->where('receiver_id', $message->receiver_id)
                         ->orWhere('sender_id', $message->receiver_id)
@@ -84,8 +84,8 @@ class MessageController extends Controller
         $message = Message::create($data);
 
         $attachments = [];
-        if($files) {
-            foreach($files as $file) {
+        if ($files) {
+            foreach ($files as $file) {
                 $directory = 'attachments/' . Str::random(10);
                 Storage::makeDirectory($directory);
 
@@ -103,10 +103,10 @@ class MessageController extends Controller
             $message->attachments = $attachments;
         }
 
-        if($receiverId) {
+        if ($receiverId) {
             Conversation::updateConversationWithMessage($receiverId, Auth::id(), $message);
         }
-        if($groupId) {
+        if ($groupId) {
             Group::updateGroupWithMessage($groupId, $message);
         }
 
@@ -118,7 +118,7 @@ class MessageController extends Controller
     public function destroy(Message $message)
     {
         // check if the user is the owner of the message
-        if($message->sender_id !== Auth::id()) {
+        if ($message->sender_id !== Auth::id()) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
@@ -127,7 +127,7 @@ class MessageController extends Controller
         $lastMessage = null; // Initialize the variable to avoid undefined error
 
         // check if the message is the group message
-        if($message->group_id) {
+        if ($message->group_id) {
             $group = Group::where('last_message_id', $message->id)->first();
         } else {
             $conversation = Conversation::where('last_message_id', $message->id)->first();
@@ -136,11 +136,11 @@ class MessageController extends Controller
         // delete the message
         $message->delete();
 
-        if($group) {
+        if ($group) {
             // repopulate the group's last message
             $group = Group::find($group->id);
             $lastMessage = $group->lastMessage;
-        } elseif($conversation) {
+        } elseif ($conversation) {
             // repopulate the conversation's last message
             $conversation = Conversation::find($conversation->id);
             $lastMessage = $conversation->lastMessage;

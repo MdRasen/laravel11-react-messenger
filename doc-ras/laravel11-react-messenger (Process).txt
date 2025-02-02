@@ -2,6 +2,7 @@
 --> php artisan serve
 --> npm run dev
 --> php artisan reverb:start --debug
+--> php artisan queue:listen
 
 =====
 
@@ -42,6 +43,22 @@ Run "php artisan migrate:fresh --seed"
 
 7) Run reverb:
 "php artisan reverb:start --debug"
+
+
+
+... ...
+... ...
+
+
+Create JOB:
+php artisan make:job DeleteGroupJob
+
+Run Queue:
+php artisan queue:listen
+
+
+
+
 
 
 

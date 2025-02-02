@@ -1,9 +1,10 @@
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 import { PencilSquareIcon } from "@heroicons/react/20/solid";
 import TextInput from "@/Components/TextInput";
 import ConversationItem from "@/Components/App/ConversationItem";
 import { useEventBus } from "@/EventBus";
+import GroupModal from "@/Components/App/GroupModal";
 
 const ChatLayout = ({ children }) => {
     const page = usePage();
@@ -12,7 +13,8 @@ const ChatLayout = ({ children }) => {
     const [localConversations, setLocalConversations] = useState([]);
     const [sortedConversations, setSortedConversations] = useState([]);
     const [onlineUsers, setOnlineUsers] = useState({});
-    const { on } = useEventBus();
+    const [showGroupModal, setShowGroupModal] = useState(false);
+    const { emit, on } = useEventBus();
 
     const isUserOnline = (userId) => onlineUsers[userId];
 
@@ -66,9 +68,31 @@ const ChatLayout = ({ children }) => {
     useEffect(() => {
         const offCreated = on("message.created", messageCreated);
         const offDeleted = on("message.deleted", messageDeleted);
+        const offModalShow = on("GroupModal.show", (group) => {
+            setShowGroupModal(true);
+        });
+
+        const offGroupDelete = on("group.deleted", ({ id, name }) => {
+            setLocalConversations((oldConversations) => {
+                return oldConversations.filter((con) => con.id != id);
+            });
+
+            emit("toast.show", `Group "${name}" deleted successfully.`);
+
+            if (
+                !selectedConversation ||
+                (selectedConversation.is_group && selectedConversation.id == id)
+            ) {
+                console.log("Redirecting to dashboard...");
+                router.visit(route("dashboard"));
+            }
+        });
+
         return () => {
             offCreated();
             offDeleted();
+            offModalShow();
+            offGroupDelete();
         };
     }, [on]);
 
@@ -151,7 +175,10 @@ const ChatLayout = ({ children }) => {
                             className="tooltip tooltip-left"
                             data-tip="Create New Group"
                         >
-                            <button className="text-gray-400 hover:text-gray-200">
+                            <button
+                                onClick={(ev) => setShowGroupModal(true)}
+                                className="text-gray-400 hover:text-gray-200"
+                            >
                                 <PencilSquareIcon className="w-4 h-4 inline-block ml-2" />
                             </button>
                         </div>
@@ -183,6 +210,10 @@ const ChatLayout = ({ children }) => {
                     {children}
                 </div>
             </div>
+            <GroupModal
+                show={showGroupModal}
+                onClose={() => setShowGroupModal(false)}
+            />
         </>
     );
 };
